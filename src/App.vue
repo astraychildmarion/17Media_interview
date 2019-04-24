@@ -36,7 +36,7 @@
           .order-form-group
             label 備註
             input(v-model='orderNote') 
-          button(
+          button.submit-btn(
             @click='addOrder'
             type='button') 訂下去
       .order-wrapper
@@ -44,7 +44,7 @@
           v-for='(order, index) in orders'
           v-if='order.name && order.price && order.ice && order.sugar != null'
         )
-          .basic
+          .order-basic
             input(
               :placeholder='order.name'
               :disabled='editNumber != index'
@@ -60,7 +60,7 @@
               placeholder='元'
               v-show='order.price != ""'
             )
-          .optional
+          .order-optional
             input(
             :placeholder='order.ice'
             :disabled='editNumber != index'
@@ -71,7 +71,7 @@
             :disabled='editNumber != index'
             v-model='order.sugar'
             )
-          textarea.note(
+          textarea.order-note(
             :placeholder='order.note'
             :disabled='editNumber != index'
             v-model='order.note'
@@ -81,7 +81,6 @@
             type='button'
             )
             span ×
-  
           button.edit-btn(
             @click='(editNumber == index)? editNumber = -1 : editNumber = index'
           )
