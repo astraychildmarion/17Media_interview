@@ -35,28 +35,64 @@
               option(v-for='(item, index) in sugarOption') {{ item }}
           .order-form-group
             label 備註
-            textarea(v-model='orderNote') 
+            input(v-model='orderNote') 
           button(
             @click='addOrder'
             type='button') 訂下去
       .order-wrapper
-        .order(v-for='(order, index) in orders' v-show='order.name !== ""',)
+        .order(
+          v-for='(order, index) in orders'
+          v-if='order.name && order.price && order.ice && order.sugar != null'
+        )
+          .basic
+            input(
+              :placeholder='order.name'
+              :disabled='editNumber != index'
+              v-model='order.name'
+            )
+            input(
+            :placeholder='order.price'
+            :disabled='editNumber != index'
+            v-model='order.price'
+            )
+            input(
+              disabled
+              placeholder='元'
+              v-show='order.price != ""'
+            )
+          .optional
+            input(
+            :placeholder='order.ice'
+            :disabled='editNumber != index'
+            v-model='order.ice'
+            )
+            input(
+            :placeholder='order.sugar'
+            :disabled='editNumber != index'
+            v-model='order.sugar'
+            )
+          textarea.note(
+            :placeholder='order.note'
+            :disabled='editNumber != index'
+            v-model='order.note'
+          )
           button.delete-btn(
             @click='removeOrder(order)'
             type='button'
             )
             span ×
-          h5 {{ order.name }}
-            span.price {{ order.price }} 元
-          p.optional
-            span {{ order.ice }}
-            span {{ order.sugar }}
-          p.note {{ order.note }}
+  
+          button.edit-btn(
+            @click='(editNumber == index)? editNumber = -1 : editNumber = index'
+          )
+            span(v-if='editNumber == -1') 修改訂單
+            span(v-else) 修改完成
 </template>
 <script>
 export default{
   data () {
     return {
+      editNumber: -1,
       name: '',
       price: '',
       orderNote: '',
@@ -66,11 +102,11 @@ export default{
       sugarOption: [ '無糖','半糖','七分糖','正常甜'],
       orders: [
         {
-          name: '',
-          price: '',
-          ice: '',
-          sugar: '',
-          note: '',
+          name: null,
+          price: null,
+          ice: null,
+          sugar: null,
+          note: null,
         }
       ],
     }
@@ -114,6 +150,10 @@ export default{
         let removeThis = this.orders.indexOf(order)
         this.orders.splice(removeThis, 1)
       }
+    },
+    editOrder (order) {
+      let editNumber = this.orders.indexOf(order)
+      return editNumber
     }
   },
 }
